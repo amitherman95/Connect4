@@ -1,4 +1,4 @@
-/*
+/* W
 Name:threads.c
 Description:Thread and processes module implementation.
 Authors:Amit Herman Raz Rajwan
