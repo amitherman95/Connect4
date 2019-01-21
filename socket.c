@@ -93,14 +93,12 @@ TransferResult_t ReceiveString(char** OutputStrPtr, SOCKET sd)
 		(int)(TotalStringSizeInBytes),
 		sd);
 
-	if (RecvRes == TRNS_SUCCEEDED)
-	{
+	if (RecvRes == TRNS_SUCCEEDED) {
 		*OutputStrPtr = StrBuffer;
 	}
-	else
-	{
+	else {
 		free(StrBuffer);
-	}
+	} 
 
 	return RecvRes;
 }
