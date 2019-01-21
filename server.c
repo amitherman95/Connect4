@@ -1,7 +1,7 @@
 /*
 Name:server.c
 Description: Server routines library
-Amit Herman Raz Rajwan
+Amit Herman
 */
 
 
@@ -43,7 +43,6 @@ int get_message_code_server(const char*message_type) {
 	for (i = 0; i < 3; i++) {
 		if (strstr(message_type, server_messages[i]) == message_type)
 			return i;
-
 	}
 	return -1;
 }
@@ -64,7 +63,6 @@ message* process_Message(const char* message_text) {
 	/* get the message type */
 	if ((lp_params = strchr(message_text, ':')) == NULL)//parameterless message type
 		message_type_code = get_message_code_server(message_text);
-
 	else {
 		message_type_size = (int)(lp_params - message_text);//lp_params-message=length of the first part of the message, e.g.:SEND_MESSAGE ==> 11 chars
 		memcpy(message_type_string, message_text, message_type_size);//extract the first time of the message
@@ -72,38 +70,28 @@ message* process_Message(const char* message_text) {
 		message_type_code = get_message_code_server(message_type_string);
 	}
 
-	if (message_type_code >= 0)
-	{
-		temp = (lp_params)+1;
-
-		proccessed_message->message_arguments = temp;
-	}
+	if (message_type_code >= 0) {
+	   temp = (lp_params)+1;
+	   proccessed_message->message_arguments = temp;
+	} 
 	else
-	{
-		proccessed_message->message_arguments = NULL;
-	}
-
+	 	proccessed_message->message_arguments = NULL;
+	
 	proccessed_message->message_type = message_type_code;
-
 	return proccessed_message;
-
-
 }
 void copy_parameters(char*target, char*param) {
 	/*just copies string from one to another without chars of type ';'*/
-
 	int i, k;
-
 	k = 0;
 	for (i = 0; i < strlen(param); i++) {
 		if (param[i] != ';') {
 			target[k] = param[i];
 			k++;
 		}
-
-		target[k] = '\0';
+		
+	target[k] = '\0';
 	}
-
 }
 void close_sockets(SOCKET socks[]) {
 
@@ -122,16 +110,14 @@ int send_game_started(SOCKET sender, SOCKET other_player) {
 	char SendStr[] = "GAME_STARTED";
 
 	SendRes = SendString(SendStr, sender);
-	if (SendRes == TRNS_FAILED)
-	{
+	if (SendRes == TRNS_FAILED)  {
 		printf("Service socket error\n");
 		closesocket(sender);
 		return 0;
 	}
 
 	SendRes = SendString(SendStr, other_player);
-	if (SendRes == TRNS_FAILED)
-	{
+	if (SendRes == TRNS_FAILED)  {
 		printf("Service socket error\n");
 		closesocket(other_player);
 		return 0;
@@ -182,8 +168,7 @@ int send_board_view(SOCKET sender, SOCKET other_player) {
 	SendStr[11 + k - 1] = '\0';
 			
 	SendRes = SendString(SendStr, sender);
-	if (SendRes == TRNS_FAILED)
-	{
+	if (SendRes == TRNS_FAILED) {
 		printf("Service socket error\n");
 		closesocket(sender);
 		return 0;
@@ -191,8 +176,7 @@ int send_board_view(SOCKET sender, SOCKET other_player) {
 
 
 	SendRes = SendString(SendStr, other_player);
-	if (SendRes == TRNS_FAILED)
-	{
+	if (SendRes == TRNS_FAILED) {
 		printf("Service socket error\n");
 		closesocket(other_player);
 		return 0;
@@ -231,16 +215,14 @@ int send_turn_switch(SOCKET sender, SOCKET other_player) {
 	strcat(SendStr, get_player_name(whose_turn()-1)); // we decrease by one since whose_turn() returns 1 or 2,
 																										//and we need 0 or 1 as inputs for get_player_name()
 	SendRes = SendString(SendStr, sender);
-	if (SendRes == TRNS_FAILED)
-	{
+	if (SendRes == TRNS_FAILED) {
 		printf("Service socket error\n");
 		closesocket(sender);
 		return 0;
 	}
 
 	SendRes = SendString(SendStr, other_player);
-	if (SendRes == TRNS_FAILED)
-	{
+	if (SendRes == TRNS_FAILED) {
 		printf("Service socket error\n");
 		closesocket(other_player);
 		return 0;
@@ -254,8 +236,7 @@ int send_play_accepted(SOCKET sender) {
 	char SendStr[20];
 	strcpy(SendStr, "PLAY_ACCEPTED");
 	SendRes = SendString(SendStr, sender);
-	if (SendRes == TRNS_FAILED)
-	{
+	if (SendRes == TRNS_FAILED) {
 		printf("Service socket error\n");
 		closesocket(sender);
 		return 0;
@@ -274,22 +255,20 @@ int send_game_ended(SOCKET sender, SOCKET other_player, int winner_or_tie) {
 				strcat(SendStr, get_player_name(winner_or_tie - 1)); // we decrease by one since whose_turn() returns 1 or 2,		
 																														 //and we need 0 or 1 as inputs for get_player_name()
 	SendRes = SendString(SendStr, sender);
-	if (SendRes == TRNS_FAILED){
+	if (SendRes == TRNS_FAILED) {
 		printf("Service socket error\n");
 		closesocket(sender);
 		return 0;
 	}
 
 	SendRes = SendString(SendStr, other_player);
-	if (SendRes == TRNS_FAILED)
-	{
+	if (SendRes == TRNS_FAILED){
 		printf("Service socket error\n");
 		closesocket(other_player);
 		return 0;
 	}
-
+	
 	return 1;
-
 }
 
 
@@ -311,22 +290,19 @@ int send_message_server(message*lp_message, SOCKET s_target,int sock_num) {
 	strcat(SendStr, lp_message->message_arguments);
 	SendRes = SendString(SendStr, s_target);
 	free(SendStr);
-	if (SendRes == TRNS_FAILED)
-	{
+	if (SendRes == TRNS_FAILED) {
 		printf("Service socket error\n");
 		closesocket(s_target);
 		return 0;
 	}
-
-	
 	return 1;
 }
 int play_request(message* msg, SOCKET sender, int socket_num, SOCKET other) {
 
 	int player;
 	int column;
-
 	int winner;
+	
 	/*	the first socket belong to the red player
 			the second socket belong to the yellow player		*/
 	switch (socket_num) {
@@ -381,9 +357,6 @@ int play_request(message* msg, SOCKET sender, int socket_num, SOCKET other) {
 		case RED_PLAYER:
 			set_status(RED_WIN);
 			break;
-
-
-	
 		}
 		return 1;
 	}
@@ -429,7 +402,7 @@ int new_user_request(const char *name, SOCKET sender, int socket_num, SOCKET oth
 		return 0;
 	}
 
-	/*Criticial region*/
+	/*Critical region*/
 	player_ready();
 	/*Send message to client*/
 	if (!send_new_user_accepted(sender))
@@ -473,7 +446,7 @@ int exec_protocol_server(message* lp_message, SOCKET sender, SOCKET other_player
 
 
 /*
-*Thread function
+*    Thread function
 *	The input is the number of the accepted socket,
 *	 the first client will have number 0 and the other one will have number 1
 */
@@ -488,17 +461,13 @@ DWORD ServiceThread(int sock_num)
 	SOCKET* other;
 	int game_status;
 	sender = &Sockets[sock_num]; 
+	char *AcceptedStr = NULL;
 	if (sock_num == 0) other = &Sockets[1]; else other = &Sockets[0];
 
 
-	while (!Done)
-	{
-		char *AcceptedStr = NULL;
-
+	while (!Done) {
 		RecvRes = ReceiveString(&AcceptedStr, *sender);
-
-		if (RecvRes == TRNS_FAILED)
-		{
+		if (RecvRes == TRNS_FAILED) {
 			game_status = get_status();
 			if (game_status != WAITING && game_status != READY) 
 				return 0;
@@ -507,8 +476,7 @@ DWORD ServiceThread(int sock_num)
 			free(AcceptedStr);
 			return 1;
 		}
-		else if (RecvRes == TRNS_DISCONNECTED)
-		{
+		else if (RecvRes == TRNS_DISCONNECTED) {
 			game_status = get_status();
 			if (game_status != WAITING && game_status != READY)
 				return 0;
@@ -528,8 +496,7 @@ DWORD ServiceThread(int sock_num)
 			}
 			delete_message(lp_message);
 		}
-	}
-
+	} //closing loop
 	return 0;
 }
 
@@ -568,15 +535,13 @@ int mainServer(const char*logfile_path, int port )
 		return 0;
 
 	MainSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (MainSocket == INVALID_SOCKET)
-	{
+	if (MainSocket == INVALID_SOCKET) {
 		printf("Error at socket( ): %ld\n", WSAGetLastError());
 		return 0;
 	}
 
 	Address = inet_addr(SERVER_ADDRESS_STR);
-	if (Address == INADDR_NONE)
-	{
+	if (Address == INADDR_NONE)  {
 		printf("The string \"%s\" cannot be converted into an ip address. ending program.\n",
 			SERVER_ADDRESS_STR);
 		return 0;
