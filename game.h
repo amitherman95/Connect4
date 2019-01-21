@@ -39,4 +39,4 @@ int check_win(int board[6][7]);
 BOOL check_tie(int board[6][7]);
 void set_turn(int player_color);
 void init_game(int board[6][7]);
-#endif
+#endif 
