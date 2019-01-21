@@ -30,7 +30,6 @@ SOCKET createSocket() {
 
 }
 
-/*oOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoOoO*/
 
 TransferResult_t SendString(const char *Str, SOCKET sd)
 {
