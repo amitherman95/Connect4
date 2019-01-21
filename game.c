@@ -215,4 +215,4 @@ int check_rows(int board[6][7]) {
 		set_turn(RED_PLAYER);
 		num_players_ready = 0;
 
-	}
+	} 
